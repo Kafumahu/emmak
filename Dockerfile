@@ -5,13 +5,13 @@ RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
 
-# Fix Apache MPM conflict: forcefully disable mpm_event and mpm_worker before
-# enabling mpm_prefork. The base php:8.3-apache image pre-enables both
-# mpm_event and mpm_worker, so we must disable them first with -f (force) to
-# avoid "More than one MPM loaded" errors at runtime.
-RUN a2dismod -f mpm_event mpm_worker || true \
- && a2enmod mpm_prefork \
- && a2enmod rewrite
+# Fix Apache MPM conflict: the php:8.3-apache base image has both mpm_event
+# and mpm_worker enabled. We must disable them by removing their .load files
+# and then enable mpm_prefork.
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
+    && a2enmod mpm_prefork \
+    && a2enmod rewrite
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -45,3 +45,4 @@ RUN chmod +x /docker-start.sh
 EXPOSE 80
 
 CMD ["/docker-start.sh"]
+
