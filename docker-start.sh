@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Create .env from .env.example if it doesn't exist.
+# Railway injects environment variables at runtime but does not write a .env
+# file to disk, so php artisan key:generate (which reads/writes .env) would
+# fail with "Failed to open stream: No such file or directory" without this.
+if [ ! -f /var/www/html/.env ]; then
+    cp /var/www/html/.env.example /var/www/html/.env
+fi
+
 # Generate app key if not set
 php artisan key:generate --force
 
