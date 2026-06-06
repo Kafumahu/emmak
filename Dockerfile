@@ -22,24 +22,10 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Nginx config
-RUN mkdir -p /etc/nginx/sites-available && \
-    echo 'server {\n\
-    listen 80;\n\
-    server_name _;\n\
-    root /var/www/html/public;\n\
-    index index.php;\n\
-    location / {\n\
-        try_files $uri $uri/ /index.php?$query_string;\n\
-    }\n\
-    location ~ \.php$ {\n\
-        fastcgi_pass 127.0.0.1:9000;\n\
-        fastcgi_index index.php;\n\
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
-        include fastcgi_params;\n\
-    }\n\
-}' > /etc/nginx/sites-available/default && \
-    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+# Nginx config - write to file properly
+RUN mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
+COPY nginx.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Start script
 COPY docker-start.sh /docker-start.sh
