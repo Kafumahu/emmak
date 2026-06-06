@@ -15,6 +15,8 @@ class Article extends Model
         'description',
         'contenu',
         'image',
+        'image2',
+        'image3',
         'video',
     ];
 

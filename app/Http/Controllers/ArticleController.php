@@ -17,10 +17,11 @@ class ArticleController extends Controller
     }
 
     public function show(Article $article)
-{
-    $article->load('user', 'tags', 'likes', 'commentaires.user', 'commentaires.reponses.user', 'commentaires.tags');
-    return view('articles.show', compact('article'));
-}
+    {
+        $article->load('user', 'tags', 'likes', 'commentaires.user', 'commentaires.reponses.user', 'commentaires.tags');
+        return view('articles.show', compact('article'));
+    }
+
     public function create()
     {
         return view('articles.create');
@@ -33,12 +34,24 @@ class ArticleController extends Controller
             'description' => 'required|string|max:500',
             'contenu' => 'required|string',
             'image' => 'nullable|image|max:5120',
-            'video' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime|max:51200',
+            'image2' => 'nullable|image|max:5120',
+            'image3' => 'nullable|image|max:5120',
+            'video' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime|max:153600',
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
+        }
+
+        $image2Path = null;
+        if ($request->hasFile('image2')) {
+            $image2Path = $request->file('image2')->store('images', 'public');
+        }
+
+        $image3Path = null;
+        if ($request->hasFile('image3')) {
+            $image3Path = $request->file('image3')->store('images', 'public');
         }
 
         $videoPath = null;
@@ -52,6 +65,8 @@ class ArticleController extends Controller
             'description' => $request->description,
             'contenu' => $request->contenu,
             'image' => $imagePath,
+            'image2' => $image2Path,
+            'image3' => $image3Path,
             'video' => $videoPath,
         ]);
 
@@ -66,13 +81,14 @@ class ArticleController extends Controller
 
         return redirect()->route('articles.index')->with('success', 'Article publié avec succès !');
     }
-    public function destroy(Article $article)
-{
-    if (auth()->id() === $article->user_id) {
-        $article->delete();
-        return redirect()->route('articles.index')->with('success', 'Article supprimé !');
-    }
 
-    return redirect()->back()->with('error', 'Non autorisé !');
-}
+    public function destroy(Article $article)
+    {
+        if (auth()->id() === $article->user_id) {
+            $article->delete();
+            return redirect()->route('articles.index')->with('success', 'Article supprimé !');
+        }
+
+        return redirect()->back()->with('error', 'Non autorisé !');
+    }
 }

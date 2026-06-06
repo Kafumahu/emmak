@@ -89,11 +89,16 @@
         display: none;
     }
 
-    .media-preview img, .media-preview video {
+    .media-preview img {
         width: 100%;
         border-radius: 10px;
-        max-height: 200px;
-        object-fit: cover;
+        height: auto;
+    }
+
+    .media-preview video {
+        width: 100%;
+        border-radius: 10px;
+        max-height: 300px;
     }
 
     .btn-publier {
@@ -131,6 +136,36 @@
         background: #f0fafa;
     }
 
+    .error-msg {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .photos-label {
+        font-size: 14px;
+        color: #1a2a4a;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .photo-slot {
+        margin-bottom: 12px;
+        background: white;
+        border: 2px dashed #2a9d8f;
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .photo-slot-title {
+        font-size: 13px;
+        color: #2a9d8f;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
     /* Barre navigation bas */
     .bottom-nav {
         position: fixed;
@@ -166,63 +201,59 @@
 
         <div class="form-group">
             <label class="form-label">Titre</label>
-            <input
-                type="text"
-                name="titre"
-                class="form-input"
-                placeholder="Titre de l'article"
-                value="{{ old('titre') }}"
-                required
-            >
+            <input type="text" name="titre" class="form-input" placeholder="Titre de l'article" value="{{ old('titre') }}" required>
         </div>
 
         <div class="form-group">
             <label class="form-label">Courte description</label>
-            <input
-                type="text"
-                name="description"
-                class="form-input"
-                placeholder="Courte description de l'article"
-                value="{{ old('description') }}"
-                required
-            >
+            <input type="text" name="description" class="form-input" placeholder="Courte description de l'article" value="{{ old('description') }}" required>
         </div>
 
         <div class="form-group">
             <label class="form-label">Contenu</label>
-            <textarea
-                name="contenu"
-                class="form-textarea"
-                placeholder="Écris ton article ici..."
-                required
-            >{{ old('contenu') }}</textarea>
+            <textarea name="contenu" class="form-textarea" placeholder="Écris ton article ici..." required>{{ old('contenu') }}</textarea>
         </div>
 
+        {{-- 3 slots photos --}}
         <div class="form-group">
-            <label class="form-label">📷 Photo (optionnel)</label>
-            <input
-                type="file"
-                name="image"
-                class="form-file"
-                accept="image/*"
-                onchange="previewImage(event)"
-            >
-            <p class="file-hint">JPG, PNG, GIF — max 5MB</p>
-            <div class="media-preview" id="image-preview">
-                <img id="preview-img" src="" alt="Aperçu">
+            <span class="photos-label">📷 Photos (optionnel — max 3)</span>
+
+            <div class="photo-slot">
+                <p class="photo-slot-title">Photo 1</p>
+                <input type="file" name="image" class="form-file" accept="image/*" onchange="previewImage(event, 'preview-img1', 'image-preview1', 'image-error1')">
+                <p class="file-hint">JPG, PNG, GIF — max 5MB</p>
+                <p class="error-msg" id="image-error1">❌ L'image dépasse 5MB.</p>
+                <div class="media-preview" id="image-preview1">
+                    <img id="preview-img1" src="" alt="Aperçu 1">
+                </div>
+            </div>
+
+            <div class="photo-slot">
+                <p class="photo-slot-title">Photo 2</p>
+                <input type="file" name="image2" class="form-file" accept="image/*" onchange="previewImage(event, 'preview-img2', 'image-preview2', 'image-error2')">
+                <p class="file-hint">JPG, PNG, GIF — max 5MB</p>
+                <p class="error-msg" id="image-error2">❌ L'image dépasse 5MB.</p>
+                <div class="media-preview" id="image-preview2">
+                    <img id="preview-img2" src="" alt="Aperçu 2">
+                </div>
+            </div>
+
+            <div class="photo-slot">
+                <p class="photo-slot-title">Photo 3</p>
+                <input type="file" name="image3" class="form-file" accept="image/*" onchange="previewImage(event, 'preview-img3', 'image-preview3', 'image-error3')">
+                <p class="file-hint">JPG, PNG, GIF — max 5MB</p>
+                <p class="error-msg" id="image-error3">❌ L'image dépasse 5MB.</p>
+                <div class="media-preview" id="image-preview3">
+                    <img id="preview-img3" src="" alt="Aperçu 3">
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <label class="form-label">🎥 Vidéo (optionnel)</label>
-            <input
-                type="file"
-                name="video"
-                class="form-file"
-                accept="video/*"
-                onchange="previewVideo(event)"
-            >
-            <p class="file-hint">MP4, MOV — max 50MB</p>
+            <input type="file" name="video" class="form-file" accept="video/*" onchange="previewVideo(event)">
+            <p class="file-hint">MP4, MOV — max 150MB</p>
+            <p class="error-msg" id="video-error">❌ La vidéo dépasse 150MB.</p>
             <div class="media-preview" id="video-preview">
                 <video id="preview-video" controls></video>
             </div>
@@ -230,13 +261,7 @@
 
         <div class="form-group">
             <label class="form-label">🏷️ Tags</label>
-            <input
-                type="text"
-                name="tags"
-                class="form-input"
-                placeholder="mode, beauté, lifestyle..."
-                value="{{ old('tags') }}"
-            >
+            <input type="text" name="tags" class="form-input" placeholder="mode, beauté, lifestyle..." value="{{ old('tags') }}">
             <p class="tags-hint">Sépare les tags par des virgules</p>
         </div>
 
@@ -260,11 +285,19 @@
 </div>
 
 <script>
-    function previewImage(event) {
+    function previewImage(event, imgId, previewId, errorId) {
         const file = event.target.files[0];
+        const errorEl = document.getElementById(errorId);
         if (file) {
-            const preview = document.getElementById('image-preview');
-            const img = document.getElementById('preview-img');
+            if (file.size > 5 * 1024 * 1024) {
+                errorEl.style.display = 'block';
+                event.target.value = '';
+                document.getElementById(previewId).style.display = 'none';
+                return;
+            }
+            errorEl.style.display = 'none';
+            const preview = document.getElementById(previewId);
+            const img = document.getElementById(imgId);
             img.src = URL.createObjectURL(file);
             preview.style.display = 'block';
         }
@@ -272,7 +305,15 @@
 
     function previewVideo(event) {
         const file = event.target.files[0];
+        const errorEl = document.getElementById('video-error');
         if (file) {
+            if (file.size > 150 * 1024 * 1024) {
+                errorEl.style.display = 'block';
+                event.target.value = '';
+                document.getElementById('video-preview').style.display = 'none';
+                return;
+            }
+            errorEl.style.display = 'none';
             const preview = document.getElementById('video-preview');
             const video = document.getElementById('preview-video');
             video.src = URL.createObjectURL(file);

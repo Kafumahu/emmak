@@ -73,6 +73,16 @@
             height: 70px;
             object-fit: contain;
         }
+
+        .tagline {
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.75);
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 17px;
+            color: #1a2a4a;
+        }
     </style>
 </head>
 <body>
@@ -81,6 +91,11 @@
     <nav class="navbar">
         <a href="{{ route('accueil') }}" class="logo">EmmaK</a>
     </nav>
+
+    <!-- Phrase de présentation -->
+    <div class="tagline">
+        Un espace pour partager vos passions, vos idées et vos histoires.
+    </div>
 
     <!-- Image principale -->
     <img src="{{ asset('images/fleur.jpeg') }}" alt="Le blog EmmaK" class="hero-image">

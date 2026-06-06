@@ -49,9 +49,9 @@
     .article-image {
         width: 100%;
         border-radius: 10px;
-        margin-bottom: 15px;
-        max-height: 300px;
-        object-fit: cover;
+        margin-bottom: 10px;
+        height: auto;
+        object-fit: unset;
     }
 
     .article-video {
@@ -295,47 +295,54 @@
         </p>
     </div>
 
-    {{-- Image --}}
-@if($article->image)
-<div style="position:relative; margin-bottom:15px">
-    <img src="{{ asset('storage/' . $article->image) }}" class="article-image" alt="{{ $article->titre }}">
-    @auth
-    <button id="like-btn" onclick="toggleLike({{ $article->id }})"
-        style="position:absolute; bottom:10px; right:10px;
-        background:{{ $article->likes->where('user_id', auth()->id())->count() ? '#e74c3c' : 'rgba(255,255,255,0.9)' }};
-        border: 2px solid #e74c3c;
-        color:{{ $article->likes->where('user_id', auth()->id())->count() ? 'white' : '#e74c3c' }};
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        cursor: pointer;
-        font-family: 'Lora', serif;">
-        ❤️ <span id="like-count">{{ $article->likes->count() }}</span>
-    </button>
-    @endauth
-</div>
-@else
-{{-- Si pas d'image, like flottant sous le header --}}
-@auth
-<div style="text-align:right; margin-bottom:15px">
-    <button id="like-btn" onclick="toggleLike({{ $article->id }})"
-        style="background:{{ $article->likes->where('user_id', auth()->id())->count() ? '#e74c3c' : 'white' }};
-        border: 2px solid #e74c3c;
-        color:{{ $article->likes->where('user_id', auth()->id())->count() ? 'white' : '#e74c3c' }};
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        cursor: pointer;
-        font-family: 'Lora', serif;">
-        ❤️ <span id="like-count">{{ $article->likes->count() }}</span>
-    </button>
-</div>
-@endauth
-@endif
-
-    {{-- Image --}}
+    {{-- Image principale avec bouton like --}}
     @if($article->image)
-    <img src="{{ asset('storage/' . $article->image) }}" class="article-image" alt="{{ $article->titre }}">
+    <div style="position:relative; margin-bottom:10px">
+        <img src="{{ asset('storage/' . $article->image) }}" class="article-image" alt="{{ $article->titre }}">
+        @auth
+        <button id="like-btn" onclick="toggleLike({{ $article->id }})"
+            style="position:absolute; bottom:10px; right:10px;
+            background:{{ $article->likes->where('user_id', auth()->id())->count() ? '#e74c3c' : 'rgba(255,255,255,0.9)' }};
+            border: 2px solid #e74c3c;
+            color:{{ $article->likes->where('user_id', auth()->id())->count() ? 'white' : '#e74c3c' }};
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Lora', serif;">
+            ❤️ <span id="like-count">{{ $article->likes->count() }}</span>
+        </button>
+        @endauth
+    </div>
+    @endif
+
+    {{-- Image 2 --}}
+    @if($article->image2)
+    <img src="{{ asset('storage/' . $article->image2) }}" class="article-image" alt="{{ $article->titre }}">
+    @endif
+
+    {{-- Image 3 --}}
+    @if($article->image3)
+    <img src="{{ asset('storage/' . $article->image3) }}" class="article-image" alt="{{ $article->titre }}" style="margin-bottom:15px">
+    @endif
+
+    {{-- Si pas d'image du tout, like flottant sous le header --}}
+    @if(!$article->image)
+    @auth
+    <div style="text-align:right; margin-bottom:15px">
+        <button id="like-btn" onclick="toggleLike({{ $article->id }})"
+            style="background:{{ $article->likes->where('user_id', auth()->id())->count() ? '#e74c3c' : 'white' }};
+            border: 2px solid #e74c3c;
+            color:{{ $article->likes->where('user_id', auth()->id())->count() ? 'white' : '#e74c3c' }};
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Lora', serif;">
+            ❤️ <span id="like-count">{{ $article->likes->count() }}</span>
+        </button>
+    </div>
+    @endauth
     @endif
 
     {{-- Vidéo --}}
